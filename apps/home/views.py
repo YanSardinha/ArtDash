@@ -8,10 +8,20 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
-from .models import dw_artigos
+from .models import dw_artigos, dw_autor
 import json
 from django.db.models import Count
 from django.core.serializers.json import DjangoJSONEncoder
+
+
+def relatorio_quantidade_de_autores(request):
+    quantidade = dw_autor.objects.count()
+    return JsonResponse({'quantidade': quantidade})
+
+    
+def relatorio_quantidade_de_artigos(request):
+    quantidade = dw_artigos.objects.count()
+    return JsonResponse({'quantidade': quantidade})
 
 
 def lista_orientadores(request):
