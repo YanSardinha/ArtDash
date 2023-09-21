@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Relatório de Artigos por Orientador</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Adicione o CSS do Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Adicione o CSS para o espaçamento -->
+    <style>
+        .select2-results__option {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .select2-search__field {
+    height: 50px;
+    padding-left: 812px !important;
+
+}
+    </style>
+</head>
+<body>
+    <select id="orientadorSelect" multiple onchange="atualizaGrafico()">
+        <!-- Opções serão preenchidas dinamicamente -->
+    </select>
+
+    <canvas id="artigos_por_orientador"></canvas>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="{{ ASSETS_ROOT }}/plugins/chart-morris/js/chartjs.js"></script>
+
+    <script type="text/javascript">
+        var myChart;
+
+        function atualizaGrafico() {
+            const select = document.getElementById('orientadorSelect');
+            const orientadores = Array.from(select.selectedOptions).map(option => option.value);
+            const url = "{% url 'relatorio_artigos_por_orientador' %}" + '?orientadores=' + orientadores.join(',');
+            fetch(url, {
+                method: "get",
+            })
+            .then(function (result) {
+                return result.json();
+            })
+            .then(function (data) {
+                const ctx = document
+                    .getElementById("artigos_por_orientador")
+                    .getContext("2d");
+                var cores_artigos_por_orientador = gera_cor((qtd = 12));
+                if (myChart) {
+                    myChart.destroy();
+                }
+                myChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: '# de Artigos',
+                                data: data.data,
+                                backgroundColor: cores_artigos_por_orientador[0],
+                                borderColor: cores_artigos_por_orientador[1],
+                                borderWidth: 1,
+                            },
+                        ],
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                            },
+                        },
+                    },
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Preencha o campo de seleção com os nomes dos orientadores aqui.
+            const url_orientadores = "{% url 'lista_orientadores' %}";
+            fetch(url_orientadores, {
+                method: "get",
+            })
+            .then(function (result) {
+                return result.json();
+            })
+            .then(function (data) {
+                const select = document.getElementById('orientadorSelect');
+                data.forEach(function(orientador) {
+                    const option = document.createElement('option');
+                    option.text = orientador;
+                    option.value = orientador;
+                    select.add(option);
+                });
+                atualizaGrafico();
+            });
+        });
+
+        // Aplicar Select2 ao campo de seleção
+        $(document).ready(function() {
+            $('#orientadorSelect').select2();
+        });
+    </script>
+
+    <!-- Adicione o JS do Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+</body>
+</html>

@@ -2,48 +2,22 @@
 $(document).ready(function() {
     setTimeout(function() {
     // [ bar-simple ] chart start
-    Morris.Bar({
-        element: 'morris-bar-chart',
-        data: [{
-                y: '2008',
-                a: 50,
-                b: 40,
-                c: 35,
-            },
-            {
-                y: '2009',
-                a: 75,
-                b: 65,
-                c: 60,
-            },
-            {
-                y: '2010',
-                a: 50,
-                b: 40,
-                c: 55,
-            },
-            {
-                y: '2011',
-                a: 75,
-                b: 65,
-                c: 85,
-            },
-            {
-                y: '2012',
-                a: 100,
-                b: 90,
-                c: 40,
-            }
-        ],
-        xkey: 'y',
-        barSizeRatio: 0.70,
-        barGap: 3,
-        resize: true,
-        responsive:true,
-        ykeys: ['a', 'b', 'c'],
-        labels: ['Bar 1', 'Bar 2', 'Bar 3'],
-        barColors: ["0-#1de9b6-#1dc4e9", "0-#899FD4-#A389D4", "#04a9f5"]
+    console.log(JSON.parse('{{ dados|safe }}'));
+
+    new Morris.Bar({
+      element: 'morris-bar-chart',
+      data: JSON.parse('{{ dados|escapejs|safe }}'),
+      xkey: 'y',
+      ykeys: ['Adriana Dias', 'Vinicius Pinheiro Marques', 'Vinicius Pinheiro Marques'],  // Substitua 'Orientador1', 'Orientador2', 'Orientador3' pelos nomes dos orientadores que você tem
+      labels: ['Orientador 1', 'Orientador 2', 'Orientador 3'],  // Substitua 'Orientador 1', 'Orientador 2', 'Orientador 3' pelos nomes que você quer mostrar no gráfico
+      barColors: ["0-#1de9b6-#1dc4e9", "0-#899FD4-#A389D4", "#04a9f5"],
+      barSizeRatio: 0.70,
+      barGap: 3,
+      resize: true,
+      responsive:true,
     });
+    
+    
     // [ bar-simple ] chart end
 
     // [ bar-stacked ] chart start
