@@ -13,6 +13,9 @@ class dw_autor(models.Model):
   tipo = models.CharField(max_length=50)
   nome = models.CharField(max_length=100)
 
+  def __str__(self) -> str:
+    return self.nome
+
 
 class dw_artigos(models.Model):
   id = models.AutoField(primary_key=True)
@@ -22,3 +25,6 @@ class dw_artigos(models.Model):
   link = models.CharField(max_length=100)
   autores = models.ForeignKey('dw_autor', on_delete=models.CASCADE)
   data_hora = models.DateTimeField(auto_now_add=True, editable=False)
+
+  def __str__(self) -> str:
+    return self.titulo
