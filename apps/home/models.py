@@ -21,3 +21,4 @@ class dw_artigos(models.Model):
   orientador = models.CharField(max_length=100)
   link = models.CharField(max_length=100)
   autores = models.ForeignKey('dw_autor', on_delete=models.CASCADE)
+  data_hora = models.DateTimeField(auto_now_add=True, editable=False)
