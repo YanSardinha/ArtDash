@@ -48,6 +48,25 @@ def relatorio_artigos_por_orientador(request):
     data_json = {'data': list(relatorio.values()), 'labels': list(relatorio.keys())}
     return JsonResponse(data_json)
 
+
+def relatorio_artigos_por_curso(request):
+    # Agrupa os artigos por orientador e conta quantos artigos cada orientador tem
+    data = dw_artigos.objects.values('curso').annotate(num_artigos=Count('curso'))
+
+    # Converte os dados para o formato necessário para o gráfico
+    cursos = [item['curso'] for item in data]
+    num_artigos = [item['num_artigos'] for item in data]
+
+    # Cria um dicionário para armazenar os dados
+    context = {
+        'cursos': cursos,
+        'num_artigos': num_artigos,
+    }
+
+    # Retorna os dados como JSON
+    return JsonResponse(context)
+
+
 @login_required(login_url="/login/")
 def index(request):
     context = {'segment': 'index'}
