@@ -24,6 +24,11 @@ def relatorio_quantidade_de_artigos(request):
     return JsonResponse({'quantidade': quantidade})
 
 
+def relatorio_quantidade_de_artigos_engenharia_civil(request):
+    quantidade = dw_artigos.objects.filter(curso__icontains="civil").count()
+    return JsonResponse({'quantidade': quantidade})
+
+
 def lista_orientadores(request):
     artigos = dw_artigos.objects.all()
     orientadores = set(artigo.orientador for artigo in artigos)
