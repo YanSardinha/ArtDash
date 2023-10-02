@@ -43,7 +43,7 @@
                                         <div class="card-body">
                                           <div class="row justify-content-center">
                                               <div class="col-sm-6">
-                                                  <select id="orientadorSelect" class="form-control mb-4" multiple onchange="atualizaGrafico()"></select>
+                                                  <select id="orientadorSelect" class="form-control" multiple onchange="atualizaGrafico()"></select>
                                               </div>
                                           </div>
                                           <canvas id="artigos_por_orientador"></canvas>
@@ -66,18 +66,24 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
 
-    <script src="{{ ASSETS_ROOT }}/plugins/chart-morris/js/chartjs.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- chart-morris Js -->
-    <script src="{{ ASSETS_ROOT }}/plugins/chart-morris/js/raphael.min.js"></script>
-    <script src="{{ ASSETS_ROOT }}/plugins/chart-morris/js/morris.min.js"></script>
-    <script src="{{ ASSETS_ROOT }}/js/pages/chart-morris-custom.js"></script>
     <script type="text/javascript">
       var myChart;
 
@@ -147,7 +153,9 @@
 
       // Aplicar Select2 ao campo de seleção
       $(document).ready(function() {
-          $('#orientadorSelect').select2();
+          $('#orientadorSelect').select2({
+              theme: 'bootstrap-5'
+          });
       });
   </script>
 
