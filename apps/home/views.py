@@ -90,29 +90,6 @@ def pages(request):
         load_template = request.path.split('/')[-1]
 
 
-        if load_template == 'chart-morris.html':
-            # Busque os dados aqui
-            cursos = dw_artigos.objects.values_list('curso', flat=True).distinct()
-            dados = []
-
-            for curso in cursos:
-                artigos_por_orientador = dw_artigos.objects.filter(curso=curso).values('orientador').annotate(n=Count('id')).values('orientador', 'n')
-                dado_curso = {'y': curso}
-                for artigo in artigos_por_orientador:
-                    dado_curso[artigo['orientador']] = artigo['n']
-                dados.append(dado_curso)
-
-            # Use Django's built-in JSON serializer to ensure your data is correctly formatted
-            dados_json = json.dumps(dados, cls=DjangoJSONEncoder)
-
-            context = {
-                'dados': dados_json,
-            }
-
-            html_template = loader.get_template('home/chart-morris.html')
-            return HttpResponse(html_template.render(context, request))
-        
-
         if load_template == 'admin':
             return HttpResponseRedirect(reverse('admin:index'))
         context['segment'] = load_template
