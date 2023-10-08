@@ -1,56 +1,45 @@
 from django.core.management.base import BaseCommand
-from django.db import connection
-from django.db.models import Q
 from ...models import dw_autor
 from ...models import dw_artigos
 import json
-import re
-
+from fuzzywuzzy import fuzz
 
 class Command(BaseCommand):
 
     def __init__(self, *args, **options):
         super().__init__(*args, **options)
-        self.connection = connection.cursor()
-        self.json_data = json.load(open("C:/Users/yansa/OneDrive/Documentos/GitHub/ArtDash/dados_biblioteca_link_arquivos.json"))
+        self.json_data = self.load_json_file("C:/Users/Yan/Desktop/ArtDash/dados_normalizados_consolidados.json")
+
+    def load_json_file(self, file_path):
+        try:
+            # Especifique a codificação 'utf-8' ao abrir o arquivo JSON
+            with open(file_path, 'r', encoding='utf-8') as arquivo_json:
+                return json.load(arquivo_json)
+        except FileNotFoundError:
+            self.stderr.write(self.style.ERROR(f"Arquivo JSON não encontrado em '{file_path}'"))
+            return []
 
     def handle(self, *args, **options):
-        # Percorre o JSON
         for artigo in self.json_data:
-            # Verifica se a lista de autores não está vazia
+            # Normaliza o título para remover caracteres especiais
+            titulo_normalizado = artigo["Titulo"]
+
             if artigo["Autores"]:
-                # Obtém o id do autor principal
-                autor_id = self._get_autor_id(artigo["Autores"][0])
+                autor_nome_normalizado = artigo["Autores"][0]["Nome"]
 
-                # Cria um objeto do modelo de autor
-                autor_obj = dw_autor.objects.get(id=autor_id)
+                autor_obj, created = dw_autor.objects.get_or_create(
+                    tipo=artigo["Autores"][0]["Tipo"],
+                    nome=autor_nome_normalizado
+                )
 
-                # Cria um objeto do modelo de artigo
                 artigo_obj = dw_artigos(
-                    titulo=artigo["Titulo"].replace("Ã‡", "ã").replace("Ã™", "õ"),
+                    titulo=titulo_normalizado,
                     curso=artigo["NomeDoCurso"],
                     orientador=artigo["NomeOrientador"],
                     link=artigo["LinkArquivo"],
                     autores=autor_obj,
                 )
 
-                # Salva o artigo no banco de dados
                 artigo_obj.save()
 
-        # Fecha a conexão com o banco de dados
-        connection.close()
-
-    def _get_autor_id(self, autor):
-        # Cria uma consulta SQL para encontrar o autor
-        consulta = Q(tipo=autor["Tipo"], nome=autor["Nome"])
-
-        # Executa a consulta
-        autor_obj = dw_autor.objects.filter(consulta).first()
-
-        # Se o autor não for encontrado, cria um novo objeto
-        if not autor_obj:
-            autor_obj = dw_autor(tipo=autor["Tipo"], nome=autor["Nome"])
-            autor_obj.save()
-
-        # Retorna o id do autor
-        return autor_obj.id
+        self.stdout.write(self.style.SUCCESS('Dados importados com sucesso!'))
