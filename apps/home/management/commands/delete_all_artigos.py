@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from apps.home.models import dw_artigos, dw_autor
+from apps.home.models import dw_artigos
 
 
 class Command(BaseCommand):
@@ -11,5 +11,4 @@ class Command(BaseCommand):
     help = 'Deleta todos os artigos.'
 
     def handle(self, *args, **kwargs):
-        # Exclua todos os artigos.
         dw_artigos.objects.all().delete()

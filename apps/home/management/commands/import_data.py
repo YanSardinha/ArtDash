@@ -12,7 +12,6 @@ class Command(BaseCommand):
 
     def load_json_file(self, file_path):
         try:
-            # Especifique a codificação 'utf-8' ao abrir o arquivo JSON
             with open(file_path, 'r', encoding='utf-8') as arquivo_json:
                 return json.load(arquivo_json)
         except FileNotFoundError:
@@ -21,7 +20,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for artigo in self.json_data:
-            # Normaliza o título para remover caracteres especiais
             titulo_normalizado = artigo["Titulo"]
 
             if artigo["Autores"]:

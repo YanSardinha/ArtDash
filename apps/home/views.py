@@ -9,7 +9,6 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.urls import reverse
 from .models import dw_artigos, dw_autor
-import json
 from django.db.models import Count
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -55,20 +54,16 @@ def relatorio_artigos_por_orientador(request):
 
 
 def relatorio_artigos_por_curso(request):
-    # Agrupa os artigos por orientador e conta quantos artigos cada orientador tem
     data = dw_artigos.objects.values('curso').annotate(num_artigos=Count('curso'))
 
-    # Converte os dados para o formato necessário para o gráfico
     cursos = [item['curso'] for item in data]
     num_artigos = [item['num_artigos'] for item in data]
 
-    # Cria um dicionário para armazenar os dados
     context = {
         'cursos': cursos,
         'num_artigos': num_artigos,
     }
 
-    # Retorna os dados como JSON
     return JsonResponse(context)
 
 
